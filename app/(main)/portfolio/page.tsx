@@ -8,14 +8,12 @@ import { TrendingUp, TrendingDown } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 
-// Mock portfolio data
 const portfolioData = [
   { id: 1, ticker: "AAPL", name: "Apple Inc.", quantity: 100, avgBuyPrice: 140, currentPrice: 150.25, totalValue: 15025, returnPercentage: 7.32 },
   { id: 2, ticker: "GOOGL", name: "Alphabet Inc.", quantity: 50, avgBuyPrice: 2000, currentPrice: 2150.75, totalValue: 107537.50, returnPercentage: 7.54 },
   { id: 3, ticker: "MSFT", name: "Microsoft Corporation", quantity: 75, avgBuyPrice: 220, currentPrice: 235.50, totalValue: 17662.50, returnPercentage: 7.05 },
 ]
 
-// Mock performance data for chart
 const performanceData = [
   { name: 'Jan', value: 100000 },
   { name: 'Feb', value: 105000 },
