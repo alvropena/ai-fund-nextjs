@@ -100,14 +100,15 @@ export default function FinancialDashboard() {
 
   const formatValue = (value: number) => {
     if (Math.abs(value) >= 1e9) {
-      return (value / 1e9).toFixed(2) + 'B'
-    } else if (Math.abs(value) >= 1e6) {
-      return (value / 1e6).toFixed(2) + 'M'
-    } else if (Math.abs(value) >= 1e3) {
-      return (value / 1e3).toFixed(2) + 'K'
-    } else {
-      return value.toFixed(2)
+      return `${(value / 1e9).toFixed(2)}B`
     }
+    if (Math.abs(value) >= 1e6) {
+      return `${(value / 1e6).toFixed(2)}M`
+    }
+    if (Math.abs(value) >= 1e3) {
+      return `${(value / 1e3).toFixed(2)}K`
+    }
+    return value.toFixed(2)
   }
 
   return (
@@ -149,10 +150,10 @@ export default function FinancialDashboard() {
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {Object.entries(ratios).map(([ratio, value]: [string, number]) => (
+                      {Object.entries(ratios).map(([ratio, value]: [string, any]) => (
                         <div key={ratio} className="flex justify-between">
                           <span className="font-medium capitalize">{ratio.replace(/([A-Z])/g, ' $1').trim()}:</span>
-                          <span>{formatValue(value)}</span>
+                          <span>{formatValue(value as number)}</span>
                         </div>
                       ))}
                     </div>
@@ -191,7 +192,7 @@ export default function FinancialDashboard() {
                     <Calendar
                       mode="single"
                       selected={date}
-                      onSelect={setDate}
+                      onSelect={(date: Date | undefined) => date && setDate(date)}
                       initialFocus
                     />
                   </PopoverContent>
