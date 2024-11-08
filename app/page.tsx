@@ -13,7 +13,7 @@ import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 
 // Mock function to fetch financial data
-const fetchFinancialData = async (ticker: string, period: Date) => {
+const fetchFinancialData = async (ticker: string, date?: Date) => {
   // This would be replaced with an actual API call
   return {
     name: "Apple Inc.",
@@ -67,11 +67,24 @@ const fetchFinancialData = async (ticker: string, period: Date) => {
   }
 }
 
+interface FinancialData {
+  name: string
+  ticker: string
+  currentPrice: number
+  calculatedValue: number
+  recommendation: 'buy' | 'sell' | 'hold'
+  ratios: {
+    [key: string]: {
+      [key: string]: number
+    }
+  }
+}
+
 export default function FinancialDashboard() {
   const [open, setOpen] = useState(false)
   const [ticker, setTicker] = useState("AAPL")
   const [date, setDate] = useState<Date>(subYears(new Date(), 1))
-  const [financialData, setFinancialData] = useState<any>(null)
+  const [financialData, setFinancialData] = useState<FinancialData | null>(null)
 
   useEffect(() => {
     handleSearch()
@@ -80,7 +93,7 @@ export default function FinancialDashboard() {
   const handleSearch = async () => {
     if (ticker && date) {
       const data = await fetchFinancialData(ticker, date)
-      setFinancialData(data)
+      setFinancialData(data as FinancialData)
       setOpen(false)
     }
   }
@@ -143,14 +156,14 @@ export default function FinancialDashboard() {
           {financialData ? (
             <div className="space-y-6 p-6">
               <h2 className="text-2xl font-semibold mb-4">Financial Ratios</h2>
-              {Object.entries(financialData.ratios).map(([category, ratios]: [string, any]) => (
+              {Object.entries(financialData.ratios).map(([category, ratios]: [string, Record<string, number>]) => (
                 <Card key={category}>
                   <CardHeader>
                     <CardTitle className="capitalize">{category.replace(/([A-Z])/g, ' $1').trim()}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {Object.entries(ratios).map(([ratio, value]: [string, any]) => (
+                      {Object.entries(ratios).map(([ratio, value]: [string, number]) => (
                         <div key={ratio} className="flex justify-between">
                           <span className="font-medium capitalize">{ratio.replace(/([A-Z])/g, ' $1').trim()}:</span>
                           <span>{formatValue(value as number)}</span>
