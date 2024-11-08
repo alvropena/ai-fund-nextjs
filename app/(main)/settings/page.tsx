@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 export default function Settings() {
   const [apiKey, setApiKey] = useState("")
@@ -27,8 +28,9 @@ export default function Settings() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">API Key</label>
+                  <Label htmlFor="apiKey">API Key</Label>
                   <Input
+                    id="apiKey"
                     type="password" 
                     value={apiKey}
                     onChange={(e) => setApiKey(e.target.value)}
@@ -44,8 +46,9 @@ export default function Settings() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Auto-refresh Interval (minutes)</label>
+                  <Label htmlFor="refreshInterval">Auto-refresh Interval (minutes)</Label>
                   <Input
+                    id="refreshInterval"
                     type="number"
                     min="1"
                     max="60"
