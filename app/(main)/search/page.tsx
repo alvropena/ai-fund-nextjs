@@ -5,14 +5,12 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { CalendarIcon, LayoutDashboard, Search, Settings, TrendingUp, TrendingDown } from "lucide-react"
+import { CalendarIcon } from "lucide-react"
 import { format, subYears } from "date-fns"
 import { cn } from "@/lib/utils"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Input } from "@/components/ui/input"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 
 // Mock function to fetch financial data
 const fetchFinancialData = async (ticker: string, period: Date) => {
@@ -74,29 +72,11 @@ const fetchFinancialData = async (ticker: string, period: Date) => {
   }
 }
 
-// Mock portfolio data
-const portfolioData = [
-  { id: 1, ticker: "AAPL", name: "Apple Inc.", quantity: 100, avgBuyPrice: 140, currentPrice: 150.25, totalValue: 15025, returnPercentage: 7.32 },
-  { id: 2, ticker: "GOOGL", name: "Alphabet Inc.", quantity: 50, avgBuyPrice: 2000, currentPrice: 2150.75, totalValue: 107537.50, returnPercentage: 7.54 },
-  { id: 3, ticker: "MSFT", name: "Microsoft Corporation", quantity: 75, avgBuyPrice: 220, currentPrice: 235.50, totalValue: 17662.50, returnPercentage: 7.05 },
-]
-
-// Mock performance data for chart
-const performanceData = [
-  { name: 'Jan', value: 100000 },
-  { name: 'Feb', value: 105000 },
-  { name: 'Mar', value: 110000 },
-  { name: 'Apr', value: 108000 },
-  { name: 'May', value: 115000 },
-  { name: 'Jun', value: 120000 },
-]
-
-export default function AIFund() {
+export default function SearchPage() {
   const [open, setOpen] = useState(false)
   const [ticker, setTicker] = useState("AAPL")
   const [date, setDate] = useState<Date>(subYears(new Date(), 1))
   const [financialData, setFinancialData] = useState<any>(null)
-  const [activeTab, setActiveTab] = useState("search")
 
   useEffect(() => {
     handleSearch()
@@ -146,8 +126,8 @@ export default function AIFund() {
     }
   }
 
-  const renderSearchScreen = () => (
-    <>
+  return (
+    <ResizablePanelGroup direction="horizontal">
       <ResizablePanel defaultSize={20}>
         <div className="flex flex-col space-y-4 p-4 bg-muted">
           <div className="flex items-center space-x-4">
@@ -247,125 +227,6 @@ export default function AIFund() {
             </div>
           )}
         </ScrollArea>
-      </ResizablePanel>
-    </>
-  )
-
-  const renderPortfolioScreen = () => (
-    <ScrollArea className="h-full">
-      <div className="space-y-6 p-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Portfolio Overview</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={performanceData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Holdings</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Ticker</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Quantity</TableHead>
-                  <TableHead>Avg Buy Price</TableHead>
-                  <TableHead>Current Price</TableHead>
-                  <TableHead>Total Value</TableHead>
-                  <TableHead>Return %</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {portfolioData.map((stock) => (
-                  <TableRow key={stock.id}>
-                    <TableCell>{stock.ticker}</TableCell>
-                    <TableCell>{stock.name}</TableCell>
-                    <TableCell>{stock.quantity}</TableCell>
-                    <TableCell>${stock.avgBuyPrice.toFixed(2)}</TableCell>
-                    <TableCell>${stock.currentPrice.toFixed(2)}</TableCell>
-                    <TableCell>${stock.totalValue.toFixed(2)}</TableCell>
-                    <TableCell>
-                      <span className={stock.returnPercentage >= 0 ? "text-green-500" : "text-red-500"}>
-                        {stock.returnPercentage >= 0 ? <TrendingUp className="inline mr-1" /> : <TrendingDown className="inline mr-1" />}
-                        {stock.returnPercentage.toFixed(2)}%
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <Button variant="outline" size="sm" className="mr-2">Buy</Button>
-                      <Button variant="outline" size="sm">Sell</Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      </div>
-    </ScrollArea>
-  )
-
-  return (
-    <ResizablePanelGroup direction="horizontal" className="min-h-screen">
-      <ResizablePanel defaultSize={15} minSize={10} maxSize={20}>
-        <div className="flex flex-col h-full">
-          <div className="p-4 font-semibold text-lg md:text-xl lg:text-2xl">AI Fund</div>
-          <nav className="space-y-2 p-2">
-            <Button
-              variant={activeTab === "search" ? "default" : "ghost"}
-              className="w-full justify-start"
-              onClick={() => setActiveTab("search")}
-            >
-              <Search className="mr-2 h-4 w-4" />
-              Search
-            </Button>
-            <Button
-              variant={activeTab === "portfolio" ? "default" : "ghost"}
-              className="w-full justify-start"
-              onClick={() => setActiveTab("portfolio")}
-            >
-              <LayoutDashboard className="mr-2 h-4 w-4" />
-              Portfolio
-            </Button>
-            <Button
-              variant={activeTab === "settings" ? "default" : "ghost"}
-              className="w-full justify-start"
-              onClick={() => setActiveTab("settings")}
-            >
-              <Settings className="mr-2 h-4 w-4" />
-              Settings
-            </Button>
-          </nav>
-        </div>
-      </ResizablePanel>
-      <ResizableHandle />
-      <ResizablePanel defaultSize={85}>
-        <ResizablePanelGroup direction="vertical">
-          {activeTab === "search" && renderSearchScreen()}
-          {activeTab === "portfolio" && renderPortfolioScreen()}
-          {activeTab === "settings" && (
-            <div className="p-4">
-              <h2 className="text-2xl font-bold mb-4">Settings</h2>
-              <p>Settings content goes here.</p>
-            </div>
-          )}
-        </ResizablePanelGroup>
       </ResizablePanel>
     </ResizablePanelGroup>
   )
